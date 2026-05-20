@@ -1,5 +1,4 @@
 .env
 scraped_data_instagram_hashtag_scraper.json
-.gitignore
 scraper_venv/
 __pycache__/
