@@ -22,7 +22,10 @@ for post in raw:
     extracted_post = {key: post.get(key) for key in FIELDS}
     filtered_data.append(extracted_post)
 
-response = get_response("HEYY LLama")
+
+# print(json.dumps(filtered_data[0:3], indent=4))
+
+response = get_response(f"I want you to find the cafe name and location from the following Instagram reel data. Return in json format of {'name':XXXX,'location':XXXX}. If there is no location specified")
 
 print(response)
 
