@@ -25,7 +25,7 @@ for post in raw:
 
 # print(json.dumps(filtered_data[0:3], indent=4))
 
-response = get_response(f"I want you to find the cafe name and location from the following Instagram reel data. Return in json format of {'name':XXXX,'location':XXXX}. If there is no location specified")
+response = get_response(f"I want you to find the cafe name and location from the following Instagram reel data. Return in json format of {'name':XXXX,'location':XXXX}. If there is no location specified, return default location value as 'Kochi'.")
 
 print(response)
 
