@@ -50,7 +50,12 @@ print(f"Count is {len(response)}")
 for item in response:
     item["location"] = "Kochi" if item.get("location") == None else item.get("location")
 
-# print(json.dumps(response, indent = 4))
+
+with open("result_from_llm.json","w") as f:
+    json.dump(response,f,indent=4,ensure_ascii=False)
+
+
+
 
 
 

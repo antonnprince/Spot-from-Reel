@@ -78,7 +78,7 @@ def get_response(posts, batch_size=10):
                     "role": "user",
                     "content": (
                         "From the Instagram posts below, extract cafe/restaurant names and locations. "
-                        "Return a JSON array where each item has 'id','name' and 'location' fields only.\n\n"
+                        "Return a JSON array where each item has 'id','name' and 'location' fields only. If any field is missing, use null. Do not leave out any items.\n\n"
                         f"{json.dumps(batch, ensure_ascii=False)}"
                     )
                 }
