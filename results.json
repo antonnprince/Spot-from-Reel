@@ -1,0 +1,357 @@
+[
+  {
+    "name": "Rico Rolls",
+    "location": "Kaloor-Kadavanthra Road, Kathrikadavu"
+  },
+  {
+    "name": "Pandhal Cafe",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Loafers Corner",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Qissa Cafe",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Lila Art Cafe",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Tibet Kitchen",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Kashi Art Cafe",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Trouvaille Cochin",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Rizo Resto Cafe",
+    "location": "Marine drive, Kurian tower Banerji Road, opposite Sarita theater, Ernakulam"
+  },
+  {
+    "name": "Froot Coffee",
+    "location": "Vyttila Junction, Kochi"
+  },
+  {
+    "name": "BSL Eatery & Food Garden",
+    "location": "Pullepady Road, near KVM, Kathrikadavu, Kaloor, Kochi"
+  },
+  {
+    "name": "Kubaba Kuzhimanthi",
+    "location": "Edappally"
+  },
+  {
+    "name": "Mouzy",
+    "location": "NH-66, Juma Masjid Ln, opposite Edapally, Nethaji Nagar, Edappally, Ernakulam, Kochi, Kerala 682025"
+  },
+  {
+    "name": "Rose & Mango",
+    "location": "Poojarivalavu, Seaport Airport Road, Kochi"
+  },
+  {
+    "name": "Meet Mr. Meat",
+    "location": "Fort Kochi"
+  },
+  {
+    "name": "Cafe Meraki",
+    "location": "Brahmapuram, Opp to Kent Mahal"
+  },
+  {
+    "name": "Tex & Mex by Chef Gee",
+    "location": "Edapally Club Junction, Kochi"
+  },
+  {
+    "name": "Indira Canteen",
+    "location": "Edapally Palarivattam"
+  },
+  {
+    "name": "Tharavadu Seafood Restaurant",
+    "location": "Premiere Road, Kalamassery, Kochi"
+  },
+  {
+    "name": "Salim Hassan's Park View Restaurant",
+    "location": "Ernakulam district"
+  },
+  {
+    "name": "Crunch Time",
+    "location": "Kochi"
+  },
+  {
+    "name": "Grand Entrée",
+    "location": "Kochi"
+  },
+  {
+    "name": "AL Sheba kuzhimandhi",
+    "location": "Palachuvadu, Kochi, Kakkanad, Kerala 682030"
+  },
+  {
+    "name": "VeettilOonu",
+    "location": "Eranakulam"
+  },
+  {
+    "name": "Hunkr",
+    "location": "Vennala, Kochi"
+  },
+  {
+    "name": "Sol by patisserie",
+    "location": "Kochi"
+  },
+  {
+    "name": "Restaurant Chef Pillai",
+    "location": "Kochi"
+  },
+  {
+    "name": "Malabar Majlis Restaurant",
+    "location": "Kochi"
+  },
+  {
+    "name": "Kunju's Jam Rolls",
+    "location": "Kakkanad"
+  },
+  {
+    "name": "Jaya Bakery",
+    "location": "Palarivattom"
+  },
+  {
+    "name": "Cochin Bakery",
+    "location": "Kaloor"
+  },
+  {
+    "name": "Society Bakery",
+    "location": "Ammankovil temple road"
+  },
+  {
+    "name": "Anns Bakery",
+    "location": "Panampally Nagar"
+  },
+  {
+    "name": "Manna restaurant",
+    "location": "Panampally Nagar"
+  },
+  {
+    "name": "Kaloor Biriyani Spot",
+    "location": "Kaloor"
+  },
+  {
+    "name": "Downtown Cochin Cafeteria",
+    "location": "Karukappilly Jn"
+  },
+  {
+    "name": "Thakkaram",
+    "location": null
+  },
+  {
+    "name": "Sign Laban",
+    "location": "MG Road, Kochi"
+  },
+  {
+    "name": "Cafe Uutopia",
+    "location": "Panangad"
+  },
+  {
+    "name": "Angadi",
+    "location": "Trissur"
+  },
+  {
+    "name": "Musiris",
+    "location": "Trissur"
+  },
+  {
+    "name": "Csons Repeat",
+    "location": "Fatima Nagar"
+  },
+  {
+    "name": "Nala Taste",
+    "location": "Vennala, Kochi"
+  },
+  {
+    "name": "Karikoot Restaurant",
+    "location": "Edapally"
+  }
+]
+// 44
+[
+    {
+        "name": "Rico Rolls",
+        "location": "Kaloor-Kadavanthra Road, Kathrikadavu"
+    },
+    {
+        "name": "Pandhal Cafe",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Loafers Corner",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Qissa Cafe",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Lila Art Cafe",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Tibet Kitchen",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Kashi Art Cafe",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Trouvaille Cochin",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Rizo Resto Cafe",
+        "location": "Marine drive, Kurian tower Banerji Road, opposite Sarita theater, Ernakulam"
+    },
+    {
+        "name": "Froot Coffee",
+        "location": "Vyttila Junction, Kochi"
+    },
+    {
+        "name": "BSL Eatery & Food Garden",
+        "location": "Pullepady Road, near KVM, Kathrikadavu, Kaloor, Kochi"
+    },
+    {
+        "name": "Kubaba Kuzhimanthi",
+        "location": "Edappally"
+    },
+    {
+        "name": "Mouzy",
+        "location": "NH-66, Juma Masjid Ln, opposite Edapally, Nethaji Nagar, Edappally, Ernakulam, Kochi, Kerala 682025"
+    },
+    {
+        "name": "Rose & Mango",
+        "location": "Poojarivalavu, Seaport Airport Road, Kochi"
+    },
+    {
+        "name": "Meet Mr. Meat",
+        "location": "Fort Kochi"
+    },
+    {
+        "name": "Cafe Meraki",
+        "location": "Brahmapuram, Opp to Kent Mahal"
+    },
+    {
+        "name": "Tex & Mex by Chef Gee",
+        "location": "Edapally Club Junction, Kochi"
+    },
+    {
+        "name": "Indira Canteen",
+        "location": "Edapally Palarivattam"
+    },
+    {
+        "name": "Tharavadu Seafood Restaurant",
+        "location": "Premiere Road, Kalamassery, Kochi"
+    },
+    {
+        "name": "Salim Hassan's Park View Restaurant",
+        "location": "Ernakulam district"
+    },
+    {
+        "name": "Crunch Time",
+        "location": "Kochi"
+    },
+    {
+        "name": "Grand Entr\u00e9e",
+        "location": "Kochi"
+    },
+    {
+        "name": "AL Sheba kuzhimandhi",
+        "location": "Palachuvadu, Kochi, Kakkanad, Kerala 682030"
+    },
+    {
+        "name": "VeettilOonu",
+        "location": "Eranakulam"
+    },
+    {
+        "name": "Hunkr",
+        "location": "Vennala, Kochi"
+    },
+    {
+        "name": "Sol by patisserie",
+        "location": "Kochi"
+    },
+    {
+        "name": "Restaurant Chef Pillai",
+        "location": "Kochi"
+    },
+    {
+        "name": "Malabar Majlis Restaurant",
+        "location": "Kochi"
+    },
+    {
+        "name": "Kunju's Jam Rolls",
+        "location": "Kakkanad"
+    },
+    {
+        "name": "Jaya Bakery",
+        "location": "Palarivattom"
+    },
+    {
+        "name": "Cochin Bakery",
+        "location": "Kaloor"
+    },
+    {
+        "name": "Society Bakery",
+        "location": "Ammankovil temple road"
+    },
+    {
+        "name": "Anns Bakery",
+        "location": "Panampally Nagar"
+    },
+    {
+        "name": "Manna restaurant",
+        "location": "Panampally Nagar"
+    },
+    {
+        "name": "Kaloor Biriyani Spot",
+        "location": "Kaloor"
+    },
+    {
+        "name": "Downtown Cochin Cafeteria",
+        "location": "Karukappilly Jn"
+    },
+    {
+        "name": "Thakkaram",
+        "location": null
+    },
+    {
+        "name": "Sign Laban",
+        "location": "MG Road, Kochi"
+    },
+    {
+        "name": "Cafe Uutopia",
+        "location": "Panangad"
+    },
+    {
+        "name": "Angadi",
+        "location": "Trissur"
+    },
+    {
+        "name": "Musiris",
+        "location": "Trissur"
+    },
+    {
+        "name": "Csons Repeat",
+        "location": "Fatima Nagar"
+    },
+    {
+        "name": "Nala Taste",
+        "location": "Vennala, Kochi"
+    },
+    {
+        "name": "Karikoot Restaurant",
+        "location": "Edapally"
+    }
+]
