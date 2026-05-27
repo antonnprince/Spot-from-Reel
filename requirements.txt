@@ -2,3 +2,4 @@ groq
 pandas
 numpy
 dotenv
+requests
