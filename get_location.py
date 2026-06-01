@@ -63,6 +63,9 @@ dataset_url = f"https://api.apify.com/v2/datasets/{dataset_id}/items?token={APIF
 
 results = requests.get(dataset_url).json()
 
+with open("location.json","w") as f:
+    json.dump(results,f,indent = 4)
+
 print(f"Total places found: {len(results)}")
 
 

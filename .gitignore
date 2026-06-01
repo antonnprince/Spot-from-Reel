@@ -4,3 +4,4 @@ scraper_venv/
 __pycache__/
 result_from_llm.json
 results.json
+location.json
