@@ -23,9 +23,14 @@ reel_data = reel_data[0:5]
 
 location_result = []
 
-payload_array = [item["name"] + " " + item["location"] for item in reel_data]
+payload_array = [
+    {
+        "id": item["id"],
+        "searchQuery": item["name"] + " " + item["location"]
+    }
+    for item in reel_data]
 
-print(f"Length of payload_array: {len(payload_array)}")
+print(f"payload_array: {payload_array}")
 
 for location in payload_array:
 
@@ -38,7 +43,7 @@ for location in payload_array:
         "locationName": "Kochi, Kerala",
         "maxResults": 5,
         "searchQueries": [
-            location
+            location["searchQuery"]
         ]
     }
 
@@ -80,12 +85,19 @@ for location in payload_array:
     dataset_url = f"https://api.apify.com/v2/datasets/{dataset_id}/items?token={APIFY_TOKEN}"
 
     results = requests.get(dataset_url).json()
-    location_result.append(results)
+    
+    # results["reel_id"] = location["id"]
+    
+    location_result.append({
+        "reel_id":location["id"],
+        "data":results,
+        "count":len(results)
+    })
 
 with open("location.json","w") as f:
     json.dump(location_result,f,indent = 4)
 
-print(f"Total places found: {len(results)}")
+print(f"Total places found: {len(location_result)}")
 
 
 
