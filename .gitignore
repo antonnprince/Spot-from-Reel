@@ -2,7 +2,7 @@
 scraped_data_instagram_hashtag_scraper.json
 scraper_venv/
 reel_venv/
-Airflow/
+Airflow/.env
 __pycache__/
 result_from_llm.json
 results.json
