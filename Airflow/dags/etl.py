@@ -41,22 +41,28 @@ BODY = {
 }
 
 with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", catchup=False) as dags:
+    pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+
+    conn = pg_hook.get_conn()
+    cursor = conn.cursor()
 
     @task
     def insert_values(table_name, values, extra_queries = ""):
-        pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
 
-        conn = pg_hook.get_conn()
-        cursor = conn.cursor()
 
         try:
             cursor.execute(f"""
-            INSERT INTO {table_name} VALUES 
+            INSERT INTO {table_name}
             {
-                ', '.join([
-                    
+                ' ,'.join([f" {key}" for key in values.keys()])
+            }
+             VALUES
+            {
+                ' ,'.join([
+                    f" '{values[key]}'" for key in values.keys()
                 ])
             }
+            {extra_queries}
             """)
         except Exception as e:
             print(f"Error occurred: {e}")
