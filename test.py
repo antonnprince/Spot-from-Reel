@@ -33,7 +33,9 @@ def insert_values(table_name, values, extra_queries = ""):
     return f"""
         INSERT INTO {table_name}
             {
-                ' ,'.join([f" {key}" for key in values.keys()])
+                  '('
+                +' ,'.join([f" {key}" for key in values.keys()])
+                +')'
             }
              VALUES
             {

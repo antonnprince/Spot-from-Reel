@@ -53,14 +53,18 @@ with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", 
         try:
             cursor.execute(f"""
             INSERT INTO {table_name}
-            {
-                ' ,'.join([f" {key}" for key in values.keys()])
+            {   
+                   '( '
+                +' ,'.join([f" {key}" for key in values.keys()])
+                +' )'
             }
              VALUES
             {
+                '( ' + 
                 ' ,'.join([
                     f" '{values[key]}'" for key in values.keys()
                 ])
+                + ' )'
             }
             {extra_queries}
             """)
