@@ -2,11 +2,15 @@ from airflow import DAG
 from airflow.providers.http.hooks.http import HttpHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.decorators import task
-# from airflow.utils.dates import days_ago
+import time
 from datetime import datetime, timedelta
-
+import os
+from dotenv import load_dotenv
 import json
 import requests
+
+load_dotenv()
+APIFY_TOKEN = os.getenv("APIFY_TOKEN")
 
 LATITUDE = '51.5074'
 LONGITUDE = '-0.1278'
@@ -28,14 +32,36 @@ BODY = {
         "kochieats",
         "KochiEats",
         "KochiFood",
-        "TasteKochi"
+        "TasteKochi",
+        "Ernakulam"
     ],
     "keywordSearch": True,
     "resultsLimit": 10,
     "resultsType": "reels"
 }
 
-with DAG(dag_id='weather_etl_pipeline',default_args=default_args, schedule = "@daily", catchup=False) as dags:
+with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", catchup=False) as dags:
+
+    @task
+    def insert_values(table_name, values, extra_queries = ""):
+        pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+
+        conn = pg_hook.get_conn()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute(f"""
+            INSERT INTO {table_name} VALUES 
+            {
+                ', '.join([
+                    
+                ])
+            }
+            """)
+        except Exception as e:
+            print(f"Error occurred: {e}")
+
+
 
     @task
     def start_reels_scraper_actor():
@@ -53,6 +79,7 @@ with DAG(dag_id='weather_etl_pipeline',default_args=default_args, schedule = "@d
 
     @task()
     def get_dataset_id(resultMetadata):
+          
         time.sleep(10)
 
         status_url = f"https://api.apify.com/v2/actor-runs/{resultMetadata['id']}?token={APIFY_TOKEN}"
@@ -83,3 +110,6 @@ with DAG(dag_id='weather_etl_pipeline',default_args=default_args, schedule = "@d
                 print(f"Error occurred: {e}")
                 time.sleep(10)
                 break
+
+    start_reel_scraper = start_reels_scraper_actor()
+    dataset_id = get_dataset_id(start_reel_scraper)
