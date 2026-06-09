@@ -29,23 +29,11 @@
 # print(f"IDs in raw but not in master: {master_ids - raw_ids }")
 # print(f"Count of raw id: {len(raw_ids)} and count of master id: {len(master_ids)}")
 
-def insert_values(table_name, values, extra_queries = ""):
-    return f"""
-        INSERT INTO {table_name}
-            {
-                  '('
-                +' ,'.join([f" {key}" for key in values.keys()])
-                +')'
-            }
-             VALUES
-            {
-                ' ,'.join([
-                    f" '{values[key]}'" for key in values.keys()
-                ])
-            }
-            {extra_queries}
-            """
+def insert_values(table_name, schema, extra_queries = ""):
 
-some_values = {"key1": "value1", "key2": "value2", "key3": "value3"}
+            
+            
+
+some_values = {"key1": "TEXT", "key2": "INT", "key3": "TEXT"}
 print(insert_values("my_table", some_values, extra_queries = "ON CONFLICT DO NOTHING"))
             # """)

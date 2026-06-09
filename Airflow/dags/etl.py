@@ -41,15 +41,16 @@ BODY = {
 }
 
 with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", catchup=False) as dags:
-    pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+    
 
-    conn = pg_hook.get_conn()
-    cursor = conn.cursor()
 
     @task
     def insert_values(table_name, values, extra_queries = ""):
-
-
+        
+        pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+        conn = pg_hook.get_conn()
+        cursor = conn.cursor()
+        
         try:
             cursor.execute(f"""
             INSERT INTO {table_name}
@@ -71,6 +72,28 @@ with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", 
         except Exception as e:
             print(f"Error occurred: {e}")
 
+    @task
+    def create_table(table_name:str, schema:dict):
+        # schema -> {col_name, col_type}
+        pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+        conn = pg_hook.get_conn()
+        cursor = conn.cursor()
+
+        try:
+            query_string = f"""CREATE TABLE IF NOT EXISTS {table_name}
+            {   '(' + 
+                ', '.join([
+                    f"{key.upper()} {schema[key].upper()}" for key in schema.keys() 
+                ])
+                + ')'
+            }
+                {extra_queries}
+                """
+            cursor.execute(query_string)
+            print(f"Table {table_name} created successfully.")
+
+        except Exception as e:
+            print(f"Error occurred: {e}")
 
 
     @task
