@@ -41,8 +41,6 @@ BODY = {
 
 with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", catchup=False) as dags:
     
-
-
     @task
     def insert_values(table_name, values, extra_queries = ""):
         
@@ -68,6 +66,8 @@ with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", 
             }
             {extra_queries}
             """)
+
+            conn.commit()
         except Exception as e:
             print(f"Error occurred: {e}")
 
@@ -89,11 +89,13 @@ with DAG(dag_id='reel_pipeline',default_args=default_args, schedule = "@daily", 
                 {extra_queries}
                 """
             cursor.execute(query_string)
+
+            conn.commit()
+            
             print(f"Table {table_name} created successfully.")
 
         except Exception as e:
             print(f"Error occurred: {e}")
-
 
     @task
     def start_reels_scraper_actor():
