@@ -7,7 +7,7 @@ from datetime import datetime,timedelta
 POSTGRES_CONN_ID = 'postgres_test'
 
 default_args = {
-    'owner':'airflow','start_date': datetime.now() - timedelta(days=1)
+    'owner':'airflow','start_date': datetime(2026,6,1)
 }
 
 with DAG(dag_id = 'sql_test', schedule = "@daily", default_args = default_args, catchup = False) as dags:
@@ -24,7 +24,10 @@ with DAG(dag_id = 'sql_test', schedule = "@daily", default_args = default_args, 
         email TEXT
          )""")
 
+        conn.commit()
 
+
+    @task
     def insert_values():
         pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
         conn = pg_hook.get_conn()
@@ -35,5 +38,7 @@ with DAG(dag_id = 'sql_test', schedule = "@daily", default_args = default_args, 
         INSERT INTO test_for_airflow VALUES(1,'aaaaaa','BBBBBBB'),(2,'b','cccccccccccccc')
         """)
 
-        first = create_table()
-        second = insert_values()
+        conn.commit()
+
+    first = create_table()
+    second = insert_values()
