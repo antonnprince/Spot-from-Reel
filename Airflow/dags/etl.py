@@ -12,8 +12,7 @@ import requests
 load_dotenv()
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
 
-LATITUDE = '51.5074'
-LONGITUDE = '-0.1278'
+
 POSTGRES_CONN_ID = 'reels_postgres' # this is the connection id we will use to connect to Postgres, it should be defined in Airflow Connections
 API_CONN_ID= 'get_reels_api'
 DATASET_CONN_ID = 'reels_dataset'
