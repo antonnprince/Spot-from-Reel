@@ -1,0 +1,182 @@
+from airflow import DAG
+from airflow.providers.http.hooks.http import HttpHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.decorators import task
+import time
+from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
+import json
+import requests
+
+load_dotenv()
+APIFY_TOKEN = os.getenv("APIFY_TOKEN")
+
+
+POSTGRES_CONN_ID = 'reels_postgres' # this is the connection id we will use to connect to Postgres, it should be defined in Airflow Connections
+API_CONN_ID= 'get_reels_api' 
+DATASET_CONN_ID = 'reels_dataset'
+RUN_STATUS_ID = 'reels_run_status'
+
+default_args = {
+    'owner': 'airflow',
+    'start_date':datetime(2025,10,3), # start date is set to yesterday to allow immediate execution
+}
+
+
+BODY = {
+    "hashtags": [
+        "kochifood",
+        "cochinfood",
+        "kochieats",
+        "KochiEats",
+        "KochiFood",
+        "TasteKochi",
+        "Ernakulam"
+    ],
+    "keywordSearch": True,
+    "resultsLimit": 10,
+    "resultsType": "reels"
+}
+
+with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@daily", catchup=False) as dags:
+    
+
+    # def insert_values(table_name, values, extra_queries = ""):
+        
+    #     pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+    #     conn = pg_hook.get_conn()
+    #     cursor = conn.cursor()
+    #     query_string = f"""
+    #         INSERT INTO {table_name}
+    #         {   
+    #                '( '
+    #             +' ,'.join([f" {key}" for key in values.keys()])
+    #             +' )'
+    #         }
+    #          VALUES
+    #         {
+    #             '( ' + 
+    #             ' ,'.join([
+    #                 f" '{values[key]}'" for key in values.keys()
+    #             ])
+    #             + ' )'
+    #         }
+    #         """
+    #     try:
+    #         cursor.execute(query_string)
+    #         conn.commit()
+    #         print(f"Query for inserting values: {values} into table: {table_name} with extra queries: {extra_queries}")
+    #         print(f"Query is {query_string}")
+    #     except Exception as e:
+    #         raise e
+    #     finally:
+    #         cursor.close()
+    #         conn.close()
+
+
+    # def create_table(table_name:str, schema:dict):
+    #     # schema -> {col_name, col_type}
+    #     pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+    #     conn = pg_hook.get_conn()
+    #     cursor = conn.cursor()
+
+    #     try:
+    #         query_string = f"""CREATE TABLE IF NOT EXISTS {table_name}
+    #         {   '(' + 
+    #             ', '.join([
+    #                 f"{key} {schema[key]}" for key in schema.keys() 
+    #             ])
+    #             + ')'
+    #         }
+    #             """
+    #         cursor.execute(query_string)
+
+    #         conn.commit()
+    #         print(f" Query String for create table: {query_string}")
+    #         print(f"Table {table_name} created successfully. ")
+
+    #     except Exception as e:
+    #         raise e
+
+    #     finally:
+    #         cursor.close()
+    #         conn.close()
+
+    @task
+    def start_reels_scraper_actor():
+        print("Starting the reels scraper actor...")
+        # http_hook = HttpHook(http_conn_id = API_CONN_ID, method = 'POST')
+        # endpoint = f"/v2/acts/apify~instagram-hashtag-scraper/runs?token={APIFY_TOKEN}"
+        # response = http_hook.run(endpoint, json=BODY)
+        # response.raise_for_status()
+        # print(f"API response: {response.json()}")
+        # resultMetadata = {}
+        
+        resultMetadata = {
+            "id": "kYpwjE8IgWafp4ndc",
+            "actId": "reGe1ST3OBgYZSsZJ",
+            "userId": "EqSYJcIUkn36T4T5R",
+            "startedAt": "2026-05-20T06:02:30.506Z",
+            "finishedAt": None,
+            "defaultDatasetId": "AZzRj2eUOGMqs63hx"
+        }
+        
+        # for i in response.json()["data"]:
+        #     if i in ["id", "actId", "userId", "startedAt", "finishedAt","defaultDatasetId"]:
+        #         print(f"{i}: {response.json()['data'][i]}")
+        #         resultMetadata[i] = response.json()['data'][i]
+
+        # create_table("reels_actor_start_metadata",
+        # {
+        #     "id": "TEXT",
+        #     "actId": "TEXT",
+        #     "userId": "TEXT",
+        #     "startedAt": "TIMESTAMPTZ",
+        #     "finishedAt": "TIMESTAMPTZ",
+        #     "defaultDatasetId": "TEXT"
+        # })
+
+        # insert_values("reels_actor_start_metadata", resultMetadata, extra_queries = "ON CONFLICT DO NOTHING")
+        
+        # metadataToInsert = {"id": resultMetadata['id']}
+        
+        return resultMetadata
+
+    @task
+    def get_dataset_id(resultMetadata):
+        print("Getting dataset id...")
+        time.sleep(10)
+
+        status_url = f"https://api.apify.com/v2/actor-runs/{resultMetadata['id']}?token={APIFY_TOKEN}"
+        
+        # while True:
+        #     try:
+        #         status_response = requests.get(status_url)
+                
+        #         status_response.raise_for_status()
+        #         status_response = status_response.json()
+        #         print(f"Status response: {status_response}")
+            
+        #         status = status_response["data"]["status"]
+
+        #         if status == "SUCCEEDED":
+        #             print("====================DONE=======================")
+        #             return resultMetadata['defaultDatasetId']
+                
+        #         elif status in ("FAILED", "ABORTED", "TIMED-OUT"):
+        #             print(f"===============STATUS IS {status} =======================")
+        #             return None
+
+        #         print(f"Current status: {status}. Checking again in 15 seconds...")
+        #         time.sleep(15)  
+
+            
+        #     except requests.RequestException as e:
+        #         print(f"Error occurred: {e}")
+        #         time.sleep(10)
+        #         break
+
+
+    start_reel_scraper = start_reels_scraper_actor()
+    dataset_id = get_dataset_id(start_reel_scraper)
