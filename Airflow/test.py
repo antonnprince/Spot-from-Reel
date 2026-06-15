@@ -5,5 +5,21 @@ headers = {
     'Content-Type':'application/json'
 }
 
-res = requests.get('https://dummyjson.com/products?limit=10&skip=5&select=key1,key2', headers = headers)
-print(json.dumps(res.json(),indent = 4))
+def insert_values(table_name,values,extra_queries = ""):
+    columns = list(values[0].keys())
+
+    col_clause = '( ' + ', '.join([f" '{item}' " for item in columns]) + ' )'
+    
+    row_clause = [ 
+            '(' + ', '.join([ f"{row[key]}" for key in columns]) + ' )'
+            for row in values
+    ]
+    return (col_clause,row_clause)
+
+res,res2 = insert_values("T",
+    [
+        {"A":100,"B":300,"TEST":None},
+        {"A":400,"B":700,"TEST":None}
+    ])
+print(res)
+print(res2)

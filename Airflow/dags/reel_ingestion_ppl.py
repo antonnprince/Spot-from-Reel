@@ -225,13 +225,16 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         # reel_data.raise_for_status()
         # reel_data = reel_data.json()
         try:
+            
+            
             print("========going to load data from json=============")
             
             with open("/usr/local/airflow/include/scraped_instagram_reel_data.json","r",encoding = "utf-8") as f:
                 reel_data = json.load(f)
             
             
-            insert_values("scraped_reels_data",)
+            
+            
         
             print("============Loaded scraped instagram data from json======")
         

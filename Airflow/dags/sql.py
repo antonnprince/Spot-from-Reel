@@ -28,7 +28,7 @@ with DAG(dag_id = 'sql_test', schedule = "@daily", default_args = default_args, 
 
 
     @task
-    def insert_values():
+    def insert_values(table_name, values, extra_queries):
         
         pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
         conn = pg_hook.get_conn()
@@ -36,6 +36,9 @@ with DAG(dag_id = 'sql_test', schedule = "@daily", default_args = default_args, 
 
         num1 = random.randint(1,100)
         num2 = random.randint(5,100)
+
+        columns = values.keys()
+
         cursor.execute(f"""
         INSERT INTO test_for_airflow VALUES({num1},'aaaaaa','BBBBBBB'),({num2},'b','cccccccccccccc')
         """)
