@@ -235,6 +235,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             
             
             
+            
         
             print("============Loaded scraped instagram data from json======")
         
