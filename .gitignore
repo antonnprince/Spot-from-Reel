@@ -1,4 +1,5 @@
 .env
+.venv/
 scraped_data_instagram_hashtag_scraper.json
 scraper_venv/
 reel_venv/

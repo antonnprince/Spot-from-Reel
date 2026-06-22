@@ -31,7 +31,7 @@
 
 def insert_values(table_name, schema, extra_queries = ""):
 
-            
+        return "someting"
             
 
 some_values = {"key1": "TEXT", "key2": "INT", "key3": "TEXT"}
