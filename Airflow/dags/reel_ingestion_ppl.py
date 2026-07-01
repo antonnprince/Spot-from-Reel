@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 import json
 import requests
+from minio import minio
+
 
 load_dotenv()
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
@@ -165,6 +167,17 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             raise e
         finally:
             print("Finished creating tables if not exist.")
+
+    @task
+    def create_buckets():
+        client = Minio(
+            "host.docker.internal:9000",
+            access_key = "admin",
+            secret_key="admin123",
+            secure=Fals
+        )
+
+        buckets = ["actor_metadata"]
 
     @task
     def start_reels_scraper_actor():
