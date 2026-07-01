@@ -42,12 +42,12 @@ BODY = {
 
 with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@daily", catchup=False) as dags:
     
-
     def insert_values(table_name, values, extra_queries = ""):
         
         pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
         conn = pg_hook.get_conn()
         cursor = conn.cursor()
+
         query_string = f"""
             INSERT INTO {table_name}
             {   
@@ -64,11 +64,13 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
                 + ' )'
             }
             """
+        
         try:
             cursor.execute(query_string)
             conn.commit()
             print(f"Query for inserting values: {values} into table: {table_name} with extra queries: {extra_queries}")
             print(f"Query is {query_string}")
+            
         except Exception as e:
             raise e
         finally:
@@ -76,28 +78,33 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             conn.close()
 
 
-    def create_table(table_name:str, schema:dict):
+    def create_table(schema_name:str,table_name:str, schema:dict):
         # schema -> {col_name, col_type}
         pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
         conn = pg_hook.get_conn()
         cursor = conn.cursor()
 
+        
+        query_string1 = f"""
+            CREATE SCHEMA IF NOT EXISTS {schema_name}
+            """
+        query_string2 = f"""CREATE TABLE IF NOT EXISTS {table_name}
+        {   '(' + 
+            ', '.join([
+                f"{key} {schema[key]}" for key in schema.keys() 
+            ])
+            + ')'
+        }
+            """
+        
         try:
-            query_string = f"""CREATE TABLE IF NOT EXISTS {table_name}
-            {   '(' + 
-                ', '.join([
-                    f"{key} {schema[key]}" for key in schema.keys() 
-                ])
-                + ')'
-            }
-                """
-            cursor.execute(query_string)
-
+            cursor.execute(query_string1)
+            cursor.execute(query_string2)
             conn.commit()
-            print(f" Query String for create table: {query_string}")
-            print(f"Table {table_name} created successfully. ")
+            print(f"Created schema {schema_name} and executed query {query_string2}")
 
         except Exception as e:
+            conn.rollback()
             raise e
 
         finally:
@@ -108,7 +115,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
     def create_tables_in_pg():
         
         try:
-            create_table("reels_actor_start_metadata",
+            create_table("run_metadata","run_metadata.reels_actor_start_metadata",
             {
                 "id": "TEXT",
                 "actId": "TEXT",
@@ -118,7 +125,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
                 "defaultDatasetId": "TEXT"
             })
 
-            create_table("scraped_reels_data",{
+            create_table("reel_data","reel_data.scraped_reels_data",{
                             "inputUrl": "TEXT",
                             "id": "TEXT",
                             "type": "TEXT",
