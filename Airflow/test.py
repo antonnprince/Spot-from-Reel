@@ -1,5 +1,6 @@
 import requests 
 import json
+from datetime import datetime
 
 headers = {
     'Content-Type':'application/json'
@@ -21,5 +22,7 @@ res,res2 = insert_values("T",
         {"A":100,"B":300,"TEST":None},
         {"A":400,"B":700,"TEST":None}
     ])
-print(res)
-print(res2)
+    
+cur= datetime.now()
+print(cur)
+# print(res2)

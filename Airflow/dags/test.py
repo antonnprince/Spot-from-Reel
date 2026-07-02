@@ -15,24 +15,27 @@ default_args = {
     'start_date':'2026-01-01',
 }
 
-with DAG(dag_id = 'test_dag',default_args = default_args, schedule = "@daily", catchup = False) as dags:
+# with DAG(dag_id = 'test_dag',default_args = default_args, schedule = "@daily", catchup = False) as dags:
 
-    @task()
-    def get_tasks():
-        print("At first task")
-        http_hook = HttpHook(http_conn_id = API_CONN_ID, method = 'GET')
-        endpoint = '/products?limit=10&skip=5&select=key1,key2'
-        response = http_hook.run(endpoint)
-        response.raise_for_status()
-        response = response.json()
-        print(f"received {len(response['products'])} products")
-        return response['products']
+#     @task()
+#     def get_tasks():
+#         print("At first task")
+#         http_hook = HttpHook(http_conn_id = API_CONN_ID, method = 'GET')
+#         endpoint = '/products?limit=10&skip=5&select=key1,key2'
+#         response = http_hook.run(endpoint)
+#         response.raise_for_status()
+#         response = response.json()
+#         print(f"received {len(response['products'])} products")
+#         return response['products']
     
-    @task()
-    def insert_tasks(products):
-        print("At second task")
-        for product in products:
-            print(product)
+#     @task()
+#     def insert_tasks(products):
+#         print("At second task")
+#         for product in products:
+#             print(product)
 
-    first_task = get_tasks()
-    second_task = insert_tasks(first_task)
+#     first_task = get_tasks()
+#     second_task = insert_tasks(first_task)
+
+
+print(datetime.now())

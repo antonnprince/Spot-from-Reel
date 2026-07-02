@@ -8,8 +8,8 @@ import os
 from dotenv import load_dotenv
 import json
 import requests
-from minio import minio
-
+from minio import Minio
+from io import BytesIO
 
 load_dotenv()
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
@@ -42,16 +42,26 @@ BODY = {
     "resultsType": "reels"
 }
 
+        
+client = Minio(
+    "host.docker.internal:9000",
+    access_key = "admin",
+    secret_key="admin123",
+    secure=False
+)
+
+buckets = ["run-metadata","reel-data"]
+
 with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@daily", catchup=False) as dags:
     
-    def insert_values(table_name, values, extra_queries = ""):
+    def insert_values(schema_name,table_name, values, extra_queries = ""):
         
         pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
         conn = pg_hook.get_conn()
         cursor = conn.cursor()
 
         query_string = f"""
-            INSERT INTO {table_name}
+            INSERT INTO {schema_name}.{table_name}
             {   
                    '( '
                 +' ,'.join([f" {key}" for key in values.keys()])
@@ -70,7 +80,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         try:
             cursor.execute(query_string)
             conn.commit()
-            print(f"Query for inserting values: {values} into table: {table_name} with extra queries: {extra_queries}")
+            print(f"Query for inserting values: {values} into table: {schema_name}.{table_name} with extra queries: {extra_queries}")
             print(f"Query is {query_string}")
             
         except Exception as e:
@@ -170,14 +180,9 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
 
     @task
     def create_buckets():
-        client = Minio(
-            "host.docker.internal:9000",
-            access_key = "admin",
-            secret_key="admin123",
-            secure=Fals
-        )
-
-        buckets = ["actor_metadata"]
+        for bucket in buckets:
+            if not client.bucket_exists(bucket):
+                client.make_bucket(bucket)
 
     @task
     def start_reels_scraper_actor():
@@ -187,16 +192,36 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         # response = http_hook.run(endpoint, json=BODY)
         # response.raise_for_status()
         # print(f"API response: {response.json()}")
-        resultMetadata = {
-            'defaultDatasetId':'TEST'
+        
+        current_date = datetime.now()
+        
+        response = {
+                "id": "kYpwjE8IgWafp4ndc",
+                "actId": "reGe1ST3OBgYZSsZJ",
+                "userId": "EqSYJcIUkn36T4T5R",
+                "startedAt": "2026-05-20T06:02:30.506Z",
+                "finishedAt": "2026-05-20T06:02:30.506Z",
+                "defaultDatasetId": "AZzRj2eUOGMqs63hx"
         }
-              
+        
+        run_metadata_json = json.dumps(response)
+        
+        client.put_object(
+            bucket_name = "run-metadata",
+            object_name = f"actor_start_{current_date}",
+            data=BytesIO(run_metadata_json.encode("utf-8")),
+            length=len(run_metadata_json.encode("utf-8")),
+            content_type="application/json"
+        )
+        
         # for i in response.json()["data"]:
         #     if i in ["id", "actId", "userId", "startedAt", "finishedAt","defaultDatasetId"]:
         #         print(f"{i}: {response.json()['data'][i]}")
         #         resultMetadata[i] = response.json()['data'][i]
 
-        # insert_values("reels_actor_start_metadata", resultMetadata, extra_queries = "ON CONFLICT DO NOTHING")
+        resultMetadata = response
+        
+        insert_values("run_metadata","reels_actor_start_metadata", resultMetadata, extra_queries = "ON CONFLICT DO NOTHING")
         
         return resultMetadata
 
@@ -263,6 +288,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             raise e
 
     create_tables = create_tables_in_pg()
+    create_bucket = create_buckets()
     start_reel_scraper = start_reels_scraper_actor()
     dataset_id = check_run_status(start_reel_scraper)
     fetching_data = fetch_data(dataset_id)
