@@ -193,6 +193,11 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         # response.raise_for_status()
         # print(f"API response: {response.json()}")
         
+        # for i in response.json()["data"]:
+        #     if i in ["id", "actId", "userId", "startedAt", "finishedAt","defaultDatasetId"]:
+        #         print(f"{i}: {response.json()['data'][i]}")
+        #         resultMetadata[i] = response.json()['data'][i]
+
         current_date = datetime.now()
         
         response = {
@@ -214,11 +219,6 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             content_type="application/json"
         )
         
-        # for i in response.json()["data"]:
-        #     if i in ["id", "actId", "userId", "startedAt", "finishedAt","defaultDatasetId"]:
-        #         print(f"{i}: {response.json()['data'][i]}")
-        #         resultMetadata[i] = response.json()['data'][i]
-
         resultMetadata = response
         
         insert_values("run_metadata","reels_actor_start_metadata", resultMetadata, extra_queries = "ON CONFLICT DO NOTHING")
@@ -231,7 +231,20 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         print("Getting dataset id...")
 
         time.sleep(10)
+        
+        pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+        conn = pg_hook.get_conn()
+        cursor = conn.cursor()
 
+        cursor.execute("""
+        SELECT * FROM run_metadata.reels_actor_start_metadata
+        ORDER BY startedat
+        DESC LIMIT 1;
+        """)
+
+        row = cursor.fetchone()
+
+        print("==========LAST ROW==============",row)
         # status_url = f"https://api.apify.com/v2/actor-runs/{resultMetadata['id']}?token={APIFY_TOKEN}"
         
         while True:
