@@ -187,43 +187,51 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
     @task
     def start_reels_scraper_actor():
         print("Starting the reels scraper actor...")
-        # http_hook = HttpHook(http_conn_id = API_CONN_ID, method = 'POST')
-        # endpoint = f"/v2/acts/apify~instagram-hashtag-scraper/runs?token={APIFY_TOKEN}"
-        # response = http_hook.run(endpoint, json=BODY)
-        # response.raise_for_status()
-        # print(f"API response: {response.json()}")
-        
-        # for i in response.json()["data"]:
-        #     if i in ["id", "actId", "userId", "startedAt", "finishedAt","defaultDatasetId"]:
-        #         print(f"{i}: {response.json()['data'][i]}")
-        #         resultMetadata[i] = response.json()['data'][i]
 
-        current_date = datetime.now()
-        
-        response = {
-                "id": "kYpwjE8IgWafp4ndc",
-                "actId": "reGe1ST3OBgYZSsZJ",
-                "userId": "EqSYJcIUkn36T4T5R",
-                "startedAt": "2026-05-20T06:02:30.506Z",
-                "finishedAt": "2026-05-20T06:02:30.506Z",
-                "defaultDatasetId": "AZzRj2eUOGMqs63hx"
-        }
-        
-        run_metadata_json = json.dumps(response)
-        
-        client.put_object(
-            bucket_name = "run-metadata",
-            object_name = f"actor_start_{current_date}",
-            data=BytesIO(run_metadata_json.encode("utf-8")),
-            length=len(run_metadata_json.encode("utf-8")),
-            content_type="application/json"
-        )
-        
-        resultMetadata = response
-        
-        insert_values("run_metadata","reels_actor_start_metadata", resultMetadata, extra_queries = "ON CONFLICT DO NOTHING")
-        
-        return resultMetadata
+        try:
+            # http_hook = HttpHook(http_conn_id = API_CONN_ID, method = 'POST')
+            # endpoint = f"/v2/acts/apify~instagram-hashtag-scraper/runs?token={APIFY_TOKEN}"
+            # response = http_hook.run(endpoint, json=BODY)
+            # response.raise_for_status()
+            # print(f"API response: {response.json()}")
+            
+            # for i in response.json()["data"]:
+            #     if i in ["id", "actId", "userId", "startedAt", "finishedAt","defaultDatasetId"]:
+            #         print(f"{i}: {response.json()['data'][i]}")
+            #         resultMetadata[i] = response.json()['data'][i]
+
+            current_date = datetime.now()
+            
+            response = {
+                    "id": "kYpwjE8IgWafp4ndc",
+                    "actId": "reGe1ST3OBgYZSsZJ",
+                    "userId": "EqSYJcIUkn36T4T5R",
+                    "startedAt": "2026-05-20T06:02:30.506Z",
+                    "finishedAt": "2026-05-20T06:02:30.506Z",
+                    "defaultDatasetId": "AZzRj2eUOGMqs63hx"
+            }
+            
+            run_metadata_json = json.dumps(response)
+            
+            client.put_object(
+                bucket_name = "run-metadata",
+                object_name = f"actor_start_{current_date}",
+                data=BytesIO(run_metadata_json.encode("utf-8")),
+                length=len(run_metadata_json.encode("utf-8")),
+                content_type="application/json"
+            )
+            
+            resultMetadata = response
+            
+            insert_values("run_metadata","reels_actor_start_metadata", resultMetadata, extra_queries = "ON CONFLICT DO NOTHING")
+            
+            return resultMetadata
+
+        except Exception as e:
+            raise e
+
+        finally:
+            print("Fetched actoor metadata and inserted values")
 
     @task
     def check_run_status(resultMetadata):
@@ -268,28 +276,38 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
 
     @task
     def fetch_data(dataset_id):
-        # http_hook = HttpHook(http_conn_id = API_CONN_ID, method = 'GET' )
-        # endpoint = f"/v2/datasets/{dataset_id}/items?token={APIFY_TOKEN}"
-        # reel_data = http_hook.run(endpoint)
-        # reel_data.raise_for_status()
-        # reel_data = reel_data.json()
+
         try:
-            
+
+            # http_hook = HttpHook(http_conn_id = API_CONN_ID, method = 'GET' )
+            # endpoint = f"/v2/datasets/{dataset_id}/items?token={APIFY_TOKEN}"
+            # reel_data = http_hook.run(endpoint)
+            # reel_data.raise_for_status()
+            # reel_data = reel_data.json()
+                    
             
             print("========going to load data from json=============")
             
             with open("/usr/local/airflow/include/scraped_instagram_reel_data.json","r",encoding = "utf-8") as f:
                 reel_data = json.load(f)
-            
-            
-            
-            
-            
+
+            current_date = datetime.now()
+
+            reel_data_bytes = json.dumps(reel_data, indent = 4).encode("utf-8")
+                        
+            client.put_object(
+            bucket_name = "reel-data",
+            object_name = f"scraped_reel_data_{current_date}",
+            data=BytesIO(reel_data_bytes),
+            length=len(reel_data_bytes),
+            content_type="application/json"
+            )
         
-            print("============Loaded scraped instagram data from json======")
+            print("============Loaded scraped instagram data from json and pushed to minio======")
         
         except Exception as e:
             raise e
+
 
     create_tables = create_tables_in_pg()
     create_bucket = create_buckets()
