@@ -242,7 +242,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         
         pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
         conn = pg_hook.get_conn()
-        cursor = conn.cursor()
+        # cursor = conn.cursor()
   
         # status_url = f"https://api.apify.com/v2/actor-runs/{resultMetadata['id']}?token={APIFY_TOKEN}"
         
@@ -303,7 +303,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             content_type="application/json"
             )
         
-            print("============Loaded scraped instagram data from json and pushed to minio======")
+            print("============Loaded scraped instagram data from json and pushed to minio========")
         
         except Exception as e:
             raise e
