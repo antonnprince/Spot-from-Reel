@@ -60,7 +60,25 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         conn = pg_hook.get_conn()
         cursor = conn.cursor()
 
-        query_string = f"""
+        if type(values)==list:
+            query_string = f"""
+            INSERT INTO {schema_name}.{table_name}
+            {   
+                   '( '
+                +' ,'.join([f" {key}" for key in values.keys()])
+                +' )'
+            }
+             VALUES
+            {
+                '( ' + 
+                ' ,'.join([
+                    f" '{values[key]}'" for key in values.keys()
+                ])
+                + ' )'
+            }
+            """
+        else:
+              query_string = f"""
             INSERT INTO {schema_name}.{table_name}
             {   
                    '( '
@@ -242,7 +260,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         
         pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
         conn = pg_hook.get_conn()
-        # cursor = conn.cursor()
+        cursor = conn.cursor()
   
         # status_url = f"https://api.apify.com/v2/actor-runs/{resultMetadata['id']}?token={APIFY_TOKEN}"
         
@@ -303,8 +321,12 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             content_type="application/json"
             )
         
-            print("============Loaded scraped instagram data from json and pushed to minio========")
-        
+            print("============Loaded scraped instagram data from json and pushed to minio======")
+
+            for reel in reel_data:
+                insert_values("reel_data","scraped_reels_data", reel)
+            
+
         except Exception as e:
             raise e
 
