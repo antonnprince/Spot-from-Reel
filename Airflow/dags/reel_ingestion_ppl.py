@@ -60,8 +60,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         conn = pg_hook.get_conn()
         cursor = conn.cursor()
 
-        if type(values)==list:
-            query_string = f"""
+        query_string = f"""
             INSERT INTO {schema_name}.{table_name}
             {   
                    '( '
@@ -77,23 +76,7 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
                 + ' )'
             }
             """
-        else:
-              query_string = f"""
-            INSERT INTO {schema_name}.{table_name}
-            {   
-                   '( '
-                +' ,'.join([f" {key}" for key in values.keys()])
-                +' )'
-            }
-             VALUES
-            {
-                '( ' + 
-                ' ,'.join([
-                    f" '{values[key]}'" for key in values.keys()
-                ])
-                + ' )'
-            }
-            """
+      =
         
         try:
             cursor.execute(query_string)
@@ -323,8 +306,9 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         
             print("============Loaded scraped instagram data from json and pushed to minio======")
 
-            for reel in reel_data:
-                insert_values("reel_data","scraped_reels_data", reel)
+    
+            
+
             
 
         except Exception as e:
