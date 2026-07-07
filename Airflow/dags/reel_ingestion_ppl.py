@@ -10,6 +10,8 @@ import json
 import requests
 from minio import Minio
 from io import BytesIO
+from psycopg2.extras import execute_values
+
 
 load_dotenv()
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
@@ -76,7 +78,6 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
                 + ' )'
             }
             """
-      =
         
         try:
             cursor.execute(query_string)
@@ -90,6 +91,29 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
             cursor.close()
             conn.close()
 
+    def bulk_insert(schema_name, table_name, values, extra_queries=""):
+        
+        pg_hook = PostgresHook(postgres_conn_id = POSTGRES_CONN_ID)
+        conn = pg_hook.get_conn()
+        cursor = conn.cursor()
+
+        if not values:
+            return
+
+        columns = list(values[0].keys())
+
+        rows = [
+            tuple(item.get(col) for col in columns)
+            for item in values
+        ]
+
+        query = f"""
+            INSERT INTO {schema_name}.{table_name}
+            ( {", ".join(columns)})
+            VALUES %s
+        """
+
+        execute_values(cursor, query, rows)
 
     def create_table(schema_name:str,table_name:str, schema:dict):
         # schema -> {col_name, col_type}
@@ -306,7 +330,9 @@ with DAG(dag_id='reel_ingestion_ppl',default_args=default_args, schedule = "@dai
         
             print("============Loaded scraped instagram data from json and pushed to minio======")
 
-    
+            bulk_insert("reel_data","scraped_reels_data",reel_data)
+
+            print("DONE inserting values into pg")
             
 
             
